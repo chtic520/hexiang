@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<!-- saved from url=(0081)http://webapi.amap.com/ui/1.0/ui/misc/PositionPicker/examples/positionPicker.html -->
+<html lang="zh-CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="./拖拽选址_files/style1503546983737.css">
+    <style type="text/css">
+    .amap-indoor-map .label-canvas {
+        position: absolute;
+        top: 0;
+        left: 0
+    }
+
+    .amap-indoor-map .highlight-image-con * {
+        pointer-events: none
+    }
+
+    .amap-indoormap-floorbar-control {
+        position: absolute;
+        margin: auto 0;
+        bottom: 165px;
+        right: 12px;
+        width: 35px;
+        text-align: center;
+        line-height: 1.3em;
+        overflow: hidden;
+        padding: 0 2px
+    }
+
+    .amap-indoormap-floorbar-control .panel-box {
+        background-color: rgba(255, 255, 255, .9);
+        border-radius: 3px;
+        border: 1px solid #ccc
+    }
+
+    .amap-indoormap-floorbar-control .select-dock {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        box-sizing: border-box;
+        height: 30px;
+        border: solid #4196ff;
+        border-width: 0 2px;
+        border-radius: 2px;
+        pointer-events: none;
+        background: linear-gradient(to bottom, #f6f8f9 0, #e5ebee 50%, #d7dee3 51%, #f5f7f9 100%)
+    }
+
+    .amap-indoor-map .transition {
+        transition: opacity .2s
+    }
+
+    ,
+    .amap-indoormap-floorbar-control .transition {
+        transition: top .2s, margin-top .2s
+    }
+
+    .amap-indoormap-floorbar-control .select-dock:after,
+    .amap-indoormap-floorbar-control .select-dock:before {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        left: 0;
+        top: 10px;
+        border: solid transparent;
+        border-width: 4px;
+        border-left-color: #4196ff
+    }
+
+    .amap-indoormap-floorbar-control .select-dock:after {
+        right: 0;
+        left: auto;
+        border-left-color: transparent;
+        border-right-color: #4196ff
+    }
+
+    .amap-indoormap-floorbar-control.is-mobile {
+        width: 37px
+    }
+
+    .amap-indoormap-floorbar-control.is-mobile .floor-btn {
+        height: 35px;
+        line-height: 35px
+    }
+
+    .amap-indoormap-floorbar-control.is-mobile .select-dock {
+        height: 35px;
+        top: 36px
+    }
+
+    .amap-indoormap-floorbar-control.is-mobile .select-dock:after,
+    .amap-indoormap-floorbar-control.is-mobile .select-dock:before {
+        top: 13px
+    }
+
+    .amap-indoormap-floorbar-control.is-mobile .floor-list-box {
+        height: 105px
+    }
+
+    .amap-indoormap-floorbar-control .floor-list-item .floor-btn {
+        color: #555;
+        font-family: "Times New Roman", sans-serif, "Microsoft Yahei";
+        font-size: 16px
+    }
+
+    .amap-indoormap-floorbar-control .floor-list-item.selected .floor-btn {
+        color: #000
+    }
+
+    .amap-indoormap-floorbar-control .floor-btn {
+        height: 28px;
+        line-height: 28px;
+        overflow: hidden;
+        cursor: pointer;
+        position: relative;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none
+    }
+
+    .amap-indoormap-floorbar-control .floor-btn:hover {
+        background-color: rgba(221, 221, 221, .4)
+    }
+
+    .amap-indoormap-floorbar-control .floor-minus,
+    .amap-indoormap-floorbar-control .floor-plus {
+        position: relative;
+        text-indent: -1000em
+    }
+
+    .amap-indoormap-floorbar-control .floor-minus:after,
+    .amap-indoormap-floorbar-control .floor-plus:after {
+        content: "";
+        position: absolute;
+        margin: auto;
+        top: 9px;
+        left: 0;
+        right: 0;
+        width: 0;
+        height: 0;
+        border: solid transparent;
+        border-width: 10px 8px;
+        border-top-color: #777
+    }
+
+    .amap-indoormap-floorbar-control .floor-minus.disabled,
+    .amap-indoormap-floorbar-control .floor-plus.disabled {
+        opacity: .3
+    }
+
+    .amap-indoormap-floorbar-control .floor-plus:after {
+        border-bottom-color: #777;
+        border-top-color: transparent;
+        top: -3px
+    }
+
+    .amap-indoormap-floorbar-control .floor-list-box {
+        max-height: 153px;
+        position: relative;
+        overflow-y: hidden
+    }
+
+    .amap-indoormap-floorbar-control .floor-list {
+        margin: 0;
+        padding: 0;
+        list-style: none
+    }
+
+    .amap-indoormap-floorbar-control .floor-list-item {
+        position: relative
+    }
+
+    .amap-indoormap-floorbar-control .floor-btn.disabled,
+    .amap-indoormap-floorbar-control .floor-btn.disabled *,
+    .amap-indoormap-floorbar-control.with-indrm-loader * {
+        -webkit-pointer-events: none!important;
+        pointer-events: none!important
+    }
+
+    .amap-indoormap-floorbar-control .with-indrm-loader .floor-nonas {
+        opacity: .5
+    }
+
+    .amap-indoor-map-moverf-marker {
+        color: #555;
+        background-color: #FFFEEF;
+        border: 1px solid #7E7E7E;
+        padding: 3px 6px;
+        font-size: 12px;
+        white-space: nowrap;
+        display: inline-block;
+        position: absolute;
+        top: 1em;
+        left: 1.2em
+    }
+
+    .amap-indoormap-floorbar-control .amap-indrm-loader {
+        -moz-animation: amap-indrm-loader 1.25s infinite linear;
+        -webkit-animation: amap-indrm-loader 1.25s infinite linear;
+        animation: amap-indrm-loader 1.25s infinite linear;
+        border: 2px solid #91A3D8;
+        border-right-color: transparent;
+        box-sizing: border-box;
+        display: inline-block;
+        overflow: hidden;
+        text-indent: -9999px;
+        width: 13px;
+        height: 13px;
+        border-radius: 7px;
+        position: absolute;
+        margin: auto;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0
+    }
+
+    @-moz-keyframes amap-indrm-loader {
+        0% {
+            -moz-transform: rotate(0);
+            transform: rotate(0)
+        }
+        100% {
+            -moz-transform: rotate(360deg);
+            transform: rotate(360deg)
+        }
+    }
+
+    @-webkit-keyframes amap-indrm-loader {
+        0% {
+            -webkit-transform: rotate(0);
+            transform: rotate(0)
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg)
+        }
+    }
+
+    @keyframes amap-indrm-loader {
+        0% {
+            -moz-transform: rotate(0);
+            -ms-transform: rotate(0);
+            -webkit-transform: rotate(0);
+            transform: rotate(0)
+        }
+        100% {
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg)
+        }
+    }
+    </style>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>拖拽选址</title>
+    <style>
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        width: 100%;
+        padding: 0;
+        overflow: hidden;
+        font-size: 13px;
+    }
+
+    .map {
+        height: 100%;
+        width: 60%;
+        float: left;
+    }
+
+    #right {
+        color: #444;
+        background-color: #f8f8f8;
+        width: 40%;
+        float: left;
+        height: 100%;
+    }
+
+    #start,
+    #stop,
+    #right input {
+        margin: 4px;
+        margin-left: 15px;
+    }
+
+    .title {
+        width: 100%;
+        background-color: #dadada
+    }
+
+    button {
+        border: solid 1px;
+        margin-left: 15px;
+        background-color: #dadafa;
+    }
+
+    .c {
+        font-weight: 600;
+        padding-left: 15px;
+        padding-top: 4px;
+    }
+
+    #lnglat,
+    #address,
+    #nearestJunction,
+    #nearestRoad,
+    #nearestPOI,
+    .title {
+        padding-left: 15px;
+    }
+    </style>
+    <style type="text/css">
+    .amap-container {
+        cursor: url(http://webapi.amap.com/theme/v1.3/openhand.cur), default;
+    }
+
+    .amap-drag {
+        cursor: url(http://webapi.amap.com/theme/v1.3/closedhand.cur), default;
+    }
+    </style>
+    <script type="text/javascript" charset="utf-8" async="" data-requirecontext="amap-ui-1.0.11" data-requiremodule="ui/misc/PositionPicker" src="./拖拽选址_files/PositionPicker.js.下载"></script>
+    <script type="text/javascript" charset="utf-8" async="" data-requirecontext="amap-ui-1.0.11" data-requiremodule="http://webapi.amap.com/count?type=UIInit&amp;k=160cab8ad6c50752175d76e61ef92c50" src="./拖拽选址_files/count"></script>
+    <style type="text/css">
+    .amap-ui-misc-positionpicker {
+        width: 0;
+        height: 0;
+        overflow: visible;
+        position: absolute;
+        top: 50%;
+        left: 50%
+    }
+
+    .amap-ui-misc-positionpicker-pin {
+        position: absolute
+    }
+    </style>
+</head>
+
+<body>
+    <div id="container" class="map amap-container" tabindex="0" style="position: relative; background: rgb(252, 249, 242); cursor: url(&quot;http://webapi.amap.com/theme/v1.3/openhand.cur&quot;), default;">
+        <object style="display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;" type="text/html" data="./拖拽选址_files/saved_resource.html"></object>
+        <div class="amap-maps">
+            <div class="amap-drags">
+                <div class="amap-layers" style="transform: translateZ(0px);">
+                    <canvas class="amap-layer" width="225" height="667" style="position: absolute; z-index: 0; top: 0px; left: 0px; height: 667px; width: 225px;"></canvas>
+                    <div class="amap-markers" style="position: absolute; z-index: 120; top: 277px; left: -142px;"></div>
+                    <canvas class="amap-labels" draggable="false" width="225" height="667" style="position: absolute; z-index: 99; height: 667px; width: 225px; top: 0px; left: 0px;"></canvas>
+                </div>
+                <div class="amap-overlays"></div>
+            </div>
+        </div>
+        <div style="display: none;"></div>
+        <div class="amap-controls">
+            <div class="amap-toolbar amap-touch-toolbar" style="right: 10px; bottom: 110px; visibility: visible;">
+                <div class="amap-pancontrol" style="display: none;">
+                    <div class="amap-pan-left"></div>
+                    <div class="amap-pan-top"></div>
+                    <div class="amap-pan-right"></div>
+                    <div class="amap-pan-bottom"></div>
+                </div>
+                <div class="amap-geo amap-toolbar-geo" style="display: none;"></div>
+                <div class="amap-zoomcontrol">
+                    <div class="amap-zoom-touch-plus">
+                        <div>+</div>
+                    </div>
+                    <div class="amap-zoom-ruler" style="display: none;">
+                        <div class="amap-zoom-mask" style="height: 18px;"></div>
+                        <div class="amap-zoom-cursor" style="top: 18px;"></div>
+                        <div class="amap-zoom-labels">
+                            <div class="amap-zoom-label-street"></div>
+                            <div class="amap-zoom-label-city"></div>
+                            <div class="amap-zoom-label-province"></div>
+                            <div class="amap-zoom-label-country"></div>
+                        </div>
+                    </div>
+                    <div class="amap-zoom-touch-minus">
+                        <div>−</div>
+                    </div>
+                </div>
+            </div>
+        </div><a class="amap-logo"><img src="./拖拽选址_files/autonavi.png"></a>
+        <div class="amap-copyright" style="display: none;">
+            <!--v1.3.28-->© 2017 AutoNavi <span class="amap-mcode">- GS(2016)710号</span></div>
+        <div class="amap-ui-misc-positionpicker"><img src="./拖拽选址_files/position-picker.png" class="amap-ui-misc-positionpicker-pin" style="width: 32px; height: 32px; top: -32px; left: -16px;"></div>
+    </div>
+    <div id="right">
+        <div>
+            <div class="title">选择模式</div>
+            <input type="radio" name="mode" value="dragMap" checked="">拖拽地图模式
+            <br>
+            <input type="radio" name="mode" value="dragMarker">拖拽Marker模式
+        </div>
+        <div>
+            <button id="start">开始选点</button>
+            <button id="stop">关闭选点</button>
+        </div>
+        <div>
+            <div class="title">选址结果</div>
+            <div class="c">经纬度:</div>
+            <div id="lnglat">114.091397,22.54589</div>
+            <div class="c">地址:</div>
+            <div id="address">广东省深圳市福田区华强北街道金茂礼都</div>
+            <div class="c">最近的路口:</div>
+            <div id="nearestJunction">兰光路与振兴路交叉口西南方向53米</div>
+            <div class="c">最近的路:</div>
+            <div id="nearestRoad">兰天路</div>
+            <div class="c">最近的POI:</div>
+            <div id="nearestPOI">金茂礼都东面7米</div>
+        </div>
+    </div>
+    <script type="text/javascript" src="./拖拽选址_files/maps"></script>
+    <!-- UI组件库 1.0 -->
+    <script src="./拖拽选址_files/main.js"></script>
+    <script type="text/javascript">
+    AMapUI.loadUI(['misc/PositionPicker'], function(PositionPicker) {
+        var map = new AMap.Map('container', {
+            zoom: 16,
+            scrollWheel: false
+        })
+        var positionPicker = new PositionPicker({
+            mode: 'dragMap',
+            map: map
+        });
+
+        positionPicker.on('success', function(positionResult) {
+            document.getElementById('lnglat').innerHTML = positionResult.position;
+            document.getElementById('address').innerHTML = positionResult.address;
+            document.getElementById('nearestJunction').innerHTML = positionResult.nearestJunction;
+            document.getElementById('nearestRoad').innerHTML = positionResult.nearestRoad;
+            document.getElementById('nearestPOI').innerHTML = positionResult.nearestPOI;
+        });
+        positionPicker.on('fail', function(positionResult) {
+            document.getElementById('lnglat').innerHTML = ' ';
+            document.getElementById('address').innerHTML = ' ';
+            document.getElementById('nearestJunction').innerHTML = ' ';
+            document.getElementById('nearestRoad').innerHTML = ' ';
+            document.getElementById('nearestPOI').innerHTML = ' ';
+        });
+        var onModeChange = function(e) {
+            positionPicker.setMode(e.target.value)
+        }
+        var startButton = document.getElementById('start');
+        var stopButton = document.getElementById('stop');
+        var dragMapMode = document.getElementsByName('mode')[0];
+        var dragMarkerMode = document.getElementsByName('mode')[1];
+        AMap.event.addDomListener(startButton, 'click', function() {
+            positionPicker.start(map.getBounds().getSouthWest())
+        })
+        AMap.event.addDomListener(stopButton, 'click', function() {
+            positionPicker.stop();
+        })
+        AMap.event.addDomListener(dragMapMode, 'change', onModeChange)
+        AMap.event.addDomListener(dragMarkerMode, 'change', onModeChange);
+        positionPicker.start();
+        map.panBy(0, 1);
+
+        map.addControl(new AMap.ToolBar({
+            liteStyle: true
+        }))
+    });
+    </script>
+</body>
+
+</html>
